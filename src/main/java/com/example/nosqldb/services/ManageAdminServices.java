@@ -50,7 +50,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         return student;
     }
 
-    public void write(Student student) {
+    public  void write(Student student) {
 
 
     //    if (this.getService() == null)
@@ -65,19 +65,20 @@ public class ManageAdminServices extends ManageCRUDServices {
         }
         Gson json = new Gson();
         String filename = String.valueOf(student.getUuid());
+        synchronized (this) {
+            try (Writer writer = new FileWriter(InitialService.COLLECTION_DIR + filename + ".json")) {
+                json.toJson(student, writer);
+                logger.info("write new student to db");
+                service.addUniqueIndex(student);
+                service.addPropertyIndex(student);
 
-        try (Writer writer = new FileWriter(InitialService.COLLECTION_DIR + filename+".json")) {
-            json.toJson(student,writer);
-            logger.info("write new student to db");
-            service.addUniqueIndex(student);
-            service.addPropertyIndex(student);
+                //    this.getService().addUniqueIndex(student);
+                //    this.getService().addPropertyIndex(student);
 
-        //    this.getService().addUniqueIndex(student);
-        //    this.getService().addPropertyIndex(student);
+            } catch (IOException e) {
+                e.printStackTrace();
 
-        }catch (IOException e) {
-            e.printStackTrace();
-
+            }
         }
     }
 
@@ -93,7 +94,7 @@ public class ManageAdminServices extends ManageCRUDServices {
     }
 
 
-    public void delete(String uuid) throws IOException {
+    public synchronized void delete(String uuid) throws IOException {
 
         Student student = null;
         student = fromJson(uuid);
@@ -105,7 +106,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         Files.delete(Path.of(InitialService.COLLECTION_DIR + uuid + ".json"));
     }
 
-    public void export(String dbName) {
+    public synchronized void export(String dbName) {
 
         logger.info("export database");
 
