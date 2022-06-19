@@ -1,6 +1,7 @@
 package com.example.nosqldb.services;
 
 import com.example.nosqldb.InitialService;
+import com.example.nosqldb.PrimitiveDatabase;
 import com.example.nosqldb.controllers.CRUDControllers;
 import com.example.nosqldb.schema.Student;
 import com.google.gson.Gson;
@@ -24,14 +25,16 @@ public class ManageCRUDServices implements ManagerInterface {
 
     @Autowired
     public static InitialService service;
+    public static PrimitiveDatabase database;
 
     private Logger logger = LogManager.getLogger(ManageCRUDServices.class);
 
     @Autowired
-    public ManageCRUDServices(InitialService service) {
+    public ManageCRUDServices(InitialService service,PrimitiveDatabase database) {
 //    public ManageCRUDServices() {
 
         this.service = service;
+        this.database = database;
     }
 
     public static InitialService getService() {
@@ -59,7 +62,7 @@ public class ManageCRUDServices implements ManagerInterface {
         List<Student> students = new ArrayList<>();
 
         logger.info("read uuid index for all students");
-        TreeSet<String> uuids = service.getUniqueIndex();
+        TreeSet<String> uuids = database.getUniqueIndex();
         uuids.stream().sorted().forEach(s -> {
             logger.info("read each student");
             Student student = fromJson(s);
@@ -82,7 +85,7 @@ public class ManageCRUDServices implements ManagerInterface {
     public List<Student> findStud(String name) {
 
         List<Student> students = new ArrayList<>();
-        TreeMap<String,List<String>> propIndex = service.getPropertyIndex();
+        TreeMap<String,List<String>> propIndex = database.getPropertyIndex();
         List<String> uuids = propIndex.get(name);
         /*uuids.forEach(uuid->{
             logger.info("this is student with "+uuid);
@@ -103,7 +106,7 @@ public class ManageCRUDServices implements ManagerInterface {
     public List<Student> displayByName() {
 
         List<Student> allByName = new ArrayList<>();
-        TreeMap<String,List<String>> propIndex = service.getPropertyIndex();
+        TreeMap<String,List<String>> propIndex = database.getPropertyIndex();
         for (Map.Entry s:propIndex.entrySet()) {
             String name = (String) s.getKey();
             List<String> uuids = (List<String>) s.getValue();
