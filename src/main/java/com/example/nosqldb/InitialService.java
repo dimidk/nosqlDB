@@ -84,9 +84,9 @@ public class InitialService {
             }
         }
 
-        Thread mainNode = new Thread(new PrimitiveDatabase(initialThread));
+        /*Thread mainNode = new Thread(new PrimitiveDatabase(initialThread));
         mainNode.start();
-        logger.info(mainNode.getName());
+        logger.info(mainNode.getName());*/
     }
 
 }

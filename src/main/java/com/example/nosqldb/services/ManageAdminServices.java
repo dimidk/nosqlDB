@@ -68,7 +68,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         }
         Gson json = new Gson();
         String filename = String.valueOf(student.getUuid());
-        synchronized (this) {
+    //    synchronized (this) {
             try (Writer writer = new FileWriter(InitialService.COLLECTION_DIR + filename + ".json")) {
                 json.toJson(student, writer);
                 logger.info("write new student to db");
@@ -86,7 +86,7 @@ public class ManageAdminServices extends ManageCRUDServices {
 
             }
             this.notifyAll();
-        }
+    //    }
 
     }
 
@@ -102,7 +102,7 @@ public class ManageAdminServices extends ManageCRUDServices {
     }
 
 
-    public synchronized void delete(String uuid) throws IOException {
+    public  void delete(String uuid) throws IOException {
 
         Student student = null;
         student = fromJson(uuid);
@@ -117,7 +117,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         Files.delete(Path.of(InitialService.COLLECTION_DIR + uuid + ".json"));
     }
 
-    public synchronized void export(String dbName) {
+    public  void export(String dbName) {
 
         logger.info("export database");
 
@@ -199,7 +199,19 @@ public class ManageAdminServices extends ManageCRUDServices {
 
         try {
             //service.loadDatabase();
-            database.loadDatabase();
+            database.loadDatabase(dbName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void replicate(String slaveDb){
+
+        logger.info("try to load/import database");
+
+        try {
+            //service.loadDatabase();
+            database.loadDatabase(slaveDb);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

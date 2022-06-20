@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @Configuration
@@ -24,21 +25,22 @@ public class CRUDControllers {
     private Logger logger = LogManager.getLogger(CRUDControllers.class);
 
     @GetMapping("/read")
-    public List<Student> read() {
+    public CompletableFuture<List<Student>> read() {
 
 
 
         logger.info("read all students");
-        List<Student> students = services.read();
+        CompletableFuture<List<Student>> students = services.read();
+       // return CompletableFuture.completedFuture(students);
         return students;
 
     }
 
     @GetMapping("/read/{uuid}")
-    public Student read(@PathVariable String uuid) {
+    public CompletableFuture<Student> read(@PathVariable String uuid) {
 
         logger.info("read for uuid"+uuid);
-        Student student = services.read(uuid);
+        CompletableFuture<Student> student = services.read(uuid);
 
         return student;
     }

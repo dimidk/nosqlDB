@@ -2,21 +2,18 @@ package com.example.nosqldb.services;
 
 import com.example.nosqldb.InitialService;
 import com.example.nosqldb.PrimitiveDatabase;
-import com.example.nosqldb.controllers.CRUDControllers;
 import com.example.nosqldb.schema.Student;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @Primary
@@ -58,28 +55,33 @@ public class ManageCRUDServices implements ManagerInterface {
     }
 
     @Override
-    public List<Student> read() {
+    @Async
+    public CompletableFuture<List<Student>> read() {
 
         List<Student> students = new ArrayList<>();
 
         logger.info("read uuid index for all students");
         TreeSet<String> uuids = database.getUniqueIndex();
         uuids.stream().sorted().forEach(s -> {
+            logger.info(Thread.currentThread().getName());
             logger.info("read each student");
             Student student = fromJson(s);
             students.add(student);
         });
 
-        return students;
+        //return students;
+        return CompletableFuture.completedFuture(students);
     }
 
     @Override
-    public Student read(String uuid) {
+    @Async
+    public CompletableFuture<Student> read(String uuid) {
 
         Student student = null;
         logger.info("read student");
         student = fromJson(uuid);
-        return student;
+        //return student;
+        return CompletableFuture.completedFuture(student);
     }
 
     @Override

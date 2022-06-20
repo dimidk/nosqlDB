@@ -15,6 +15,7 @@ import java.io.IOException;
 public class AdminControllers {
 
     @Autowired
+   // private ManagerInterface adminServices;
     private ManageAdminServices adminServices;
 
     private Logger logger = LogManager.getLogger(AdminControllers.class);
@@ -63,6 +64,13 @@ public class AdminControllers {
 
         logger.info("delete certain student");
         adminServices.delete(uuid);
+
+    }
+    @GetMapping("/replica/{slaveDb}")
+    public void replica(@PathVariable String slaveDb) {
+
+        logger.info("create replication database");
+        adminServices.replicate(slaveDb);
 
     }
 
