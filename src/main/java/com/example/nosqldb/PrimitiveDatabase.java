@@ -34,7 +34,7 @@ public class PrimitiveDatabase implements Runnable{
 
     @Autowired
     public PrimitiveDatabase(InitialService server){
-        logger.info(Thread.currentThread().getName());
+        logger.info("constructor primitive database :" +Thread.currentThread().getName());
 
         this.server = server;
     };
@@ -145,7 +145,13 @@ public class PrimitiveDatabase implements Runnable{
     public void run() {
 
         logger.info("threads instances for primitive database");
+        logger.info("load indexes unique and property");
 
-        createThread();
+        try {
+            loadDatabase();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

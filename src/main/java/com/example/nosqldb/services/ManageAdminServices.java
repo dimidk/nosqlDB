@@ -1,6 +1,7 @@
 package com.example.nosqldb.services;
 
 import com.example.nosqldb.InitialService;
+import com.example.nosqldb.PrimitiveDatabase;
 import com.example.nosqldb.schema.Student;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;

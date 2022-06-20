@@ -32,7 +32,8 @@ public class ManageCRUDServices implements ManagerInterface {
     @Autowired
     public ManageCRUDServices(InitialService service,PrimitiveDatabase database) {
 //    public ManageCRUDServices() {
-
+        logger.info("ManageCRUDServices for primitive database "+Thread.currentThread().getName() +
+                " "+Thread.currentThread().getId());
         this.service = service;
         this.database = database;
     }

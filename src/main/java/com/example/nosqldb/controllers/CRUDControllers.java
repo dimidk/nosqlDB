@@ -26,6 +26,8 @@ public class CRUDControllers {
     @GetMapping("/read")
     public List<Student> read() {
 
+
+
         logger.info("read all students");
         List<Student> students = services.read();
         return students;
