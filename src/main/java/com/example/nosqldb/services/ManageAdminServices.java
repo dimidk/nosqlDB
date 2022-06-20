@@ -25,7 +25,7 @@ public class ManageAdminServices extends ManageCRUDServices {
 
     @Autowired
     private  InitialService service ;
-    @Autowired
+    //@Autowired
     private PrimitiveDatabase database;
 
     private Logger logger = LogManager.getLogger(ManageAdminServices.class);

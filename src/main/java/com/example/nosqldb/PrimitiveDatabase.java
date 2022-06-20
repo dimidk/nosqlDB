@@ -1,14 +1,17 @@
 package com.example.nosqldb;
 
 
+import com.example.nosqldb.schema.Student;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-public abstract class PrimitiveDatabase implements PrimitiveDBInterface{
+//public abstract class PrimitiveDatabase implements PrimitiveDBInterface{
+public abstract class PrimitiveDatabase {
 
     public static final String DATABASE_DIR = "db/";
     public static final String COLLECTION_DIR = "db/student/";
@@ -38,6 +41,51 @@ public abstract class PrimitiveDatabase implements PrimitiveDBInterface{
         this.propertyIndex = propertyIndex;
     }
 
+    public void addPropertyIndex(Student stud) {
+
+        if (stud == null) {
+        //    logger.info("ERROR");
+            throw new IllegalArgumentException();
+        }
+        if (this.getPropertyIndex().containsKey(stud.getSurname()))
+            this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
+        else {
+            this.getPropertyIndex().put(stud.getSurname(),new ArrayList<>());
+            this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
+        }
+    }
+
+    public void deletePropertyIndex(Student stud) {
+
+        if (stud == null)
+            throw new IllegalArgumentException();
+
+        List<String> temp = this.getPropertyIndex().get(stud.getSurname());
+        this.getPropertyIndex().remove(stud.getSurname(),temp);
+
+        temp.remove(String.valueOf(stud.getUuid()));
+        this.getPropertyIndex().put(stud.getSurname(),temp);
+        //this.getPropertyIndex().remove(stud.getSurname());
+    }
+
+    public void addUniqueIndex(Student stud) {
+
+        if (stud == null) {
+            throw new IllegalArgumentException();
+        }
+        this.getUniqueIndex().add(String.valueOf(stud.getUuid()));
+
+    }
+
+    public void deleteUniqueIndex(Student stud) {
+
+
+        if (stud == null) {
+            throw new IllegalArgumentException();
+        }
+        this.getUniqueIndex().remove(String.valueOf(stud.getUuid()));
+
+    }
     public abstract void createDbDir();
 
     public abstract void loadDatabase(String dir) throws IOException ;

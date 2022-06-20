@@ -26,7 +26,7 @@ public class MasterDB extends PrimitiveDatabase {
     }
     
     
-    public void addPropertyIndex(Student stud) {
+    /*public void addPropertyIndex(Student stud) {
         
         if (stud == null) {
             logger.info("ERROR");
@@ -39,9 +39,11 @@ public class MasterDB extends PrimitiveDatabase {
             this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
         }
 
-    }
+    }*/
 
-    public void deletePropertyIndex(Student stud) {
+    /*public void deletePropertyIndex(Student stud) {
+
+
 
         if (stud == null) {
             logger.info("ERROR");
@@ -72,7 +74,7 @@ public class MasterDB extends PrimitiveDatabase {
             throw new IllegalArgumentException();
         }
         this.getUniqueIndex().remove(String.valueOf(stud.getUuid()));
-    }
+    }*/
 
     public boolean dbDirExists() {
         
@@ -105,7 +107,7 @@ public class MasterDB extends PrimitiveDatabase {
         if (this.getPropertyIndex().size() == 0 || this.getUniqueIndex().size() == 0) {
 
         //    if (Files.exists(Path.of(PrimitiveDatabase.COLLECTION_DIR))) {
-            if (Files.exists(Path.of(dir)))
+            if (Files.exists(Path.of(dir))) {
                 logger.info(Thread.currentThread().getName()+" satisfies request");
                 logger.info("directory exists");
                 
