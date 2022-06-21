@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -23,58 +25,9 @@ public class MasterDB extends PrimitiveDatabase {
     
     public MasterDB(InitialService server) {
         super(server);
-    }
-    
-    
-    /*public void addPropertyIndex(Student stud) {
-        
-        if (stud == null) {
-            logger.info("ERROR");
-            throw new IllegalArgumentException();
-        }
-        if (this.getPropertyIndex().containsKey(stud.getSurname()))
-            this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
-        else {
-            this.getPropertyIndex().put(stud.getSurname(),new ArrayList<>());
-            this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
-        }
-
-    }*/
-
-    /*public void deletePropertyIndex(Student stud) {
-
-
-
-        if (stud == null) {
-            logger.info("ERROR");
-            throw new IllegalArgumentException();
-        }
-        List<String> temp = this.getPropertyIndex().get(stud.getSurname());
-        this.getPropertyIndex().remove(stud.getSurname(),temp);
-
-        temp.remove(String.valueOf(stud.getUuid()));
-        this.getPropertyIndex().put(stud.getSurname(),temp);
-        //this.getPropertyIndex().remove(stud.getSurname());
 
     }
 
-    public void addUniqueIndex(Student stud) {
-
-        if (stud == null) {
-            logger.info("ERROR");
-            throw new IllegalArgumentException();
-        }
-        this.getUniqueIndex().add(String.valueOf(stud.getUuid()));
-    }
-
-    public void deleteUniqueIndex(Student stud) {
-
-        if (stud == null) {
-            logger.info("ERROR");
-            throw new IllegalArgumentException();
-        }
-        this.getUniqueIndex().remove(String.valueOf(stud.getUuid()));
-    }*/
 
     public boolean dbDirExists() {
         
@@ -97,14 +50,24 @@ public class MasterDB extends PrimitiveDatabase {
                 e.printStackTrace();
             }
         }
+        else
+            logger.info("directory exists!!");
     }
 
 
     public void loadDatabase(String dir) throws IOException {
 
         dir = PrimitiveDatabase.COLLECTION_DIR;
+        logger.info("directory to read from "+dir);
+
+        TreeSet<String> tempTree = this.getUniqueIndex();
+        TreeMap<String,List<String>> tempMap = this.getPropertyIndex();
+
+        logger.info(tempTree.size());
+        logger.info(tempMap.entrySet().size());
 
         if (this.getPropertyIndex().size() == 0 || this.getUniqueIndex().size() == 0) {
+    //    if (tempTree.size() == 0 || tempMap.size() == 0) {
 
         //    if (Files.exists(Path.of(PrimitiveDatabase.COLLECTION_DIR))) {
             if (Files.exists(Path.of(dir))) {
@@ -117,8 +80,18 @@ public class MasterDB extends PrimitiveDatabase {
                     Gson json = new Gson();
                     try (Reader reader = new FileReader(String.valueOf(s))) {
                         Student student = json.fromJson(reader, Student.class);
+
+                    //    this.addPropertyIndex(student);
+                    //    this.addUniqueIndex(student);
+
+                        tempTree.add(String.valueOf(student.getUuid()));
+
                         addPropertyIndex(student);
                         addUniqueIndex(student);
+                        logger.info(tempTree.first());
+                        logger.info(tempMap.firstKey());
+                        logger.info(getPropertyIndex().size());
+                        logger.info(getUniqueIndex().size());
 
                     } catch (FileNotFoundException e) {
                         throw new RuntimeException(e);
@@ -127,6 +100,11 @@ public class MasterDB extends PrimitiveDatabase {
                     }
                 });
             }
+        }
+        //this.setUniqueIndex(tempTree);
+        setUniqueIndex(tempTree);
+        for(String uuid:tempTree) {
+            logger.info("this is from loaddatabase method to import unique index"+uuid);
         }
     }
 

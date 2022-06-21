@@ -2,6 +2,7 @@ package com.example.nosqldb.controllers;
 
 import com.example.nosqldb.schema.Student;
 import com.example.nosqldb.services.ManageAdminServices;
+import com.example.nosqldb.services.ManagerInterface;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

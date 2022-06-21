@@ -22,17 +22,12 @@ public class ManageCRUDServices implements ManagerInterface {
 
     @Autowired
     public static InitialService service;
-    public static PrimitiveDatabase database;
 
     private Logger logger = LogManager.getLogger(ManageCRUDServices.class);
 
     @Autowired
-    public ManageCRUDServices(InitialService service,PrimitiveDatabase database) {
-//    public ManageCRUDServices() {
-        logger.info("ManageCRUDServices for primitive database "+Thread.currentThread().getName() +
-                " "+Thread.currentThread().getId());
+    public ManageCRUDServices(InitialService service) {
         this.service = service;
-        this.database = database;
     }
 
     public static InitialService getService() {
@@ -44,9 +39,9 @@ public class ManageCRUDServices implements ManagerInterface {
         Student student = null;
         Gson json = new Gson();
         try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+field+".json")) {
+
             student = json.fromJson(reader,Student.class);
             logger.info(student.getUuid());
-            //students.add(student);
 
         }catch (IOException e ){
             e.printStackTrace();
@@ -55,13 +50,15 @@ public class ManageCRUDServices implements ManagerInterface {
     }
 
     @Override
-    @Async
-    public CompletableFuture<List<Student>> read() {
+    //@Async
+//    public CompletableFuture<List<Student>> read() {
+    public List<Student> read() {
 
         List<Student> students = new ArrayList<>();
 
         logger.info("read uuid index for all students");
-        TreeSet<String> uuids = database.getUniqueIndex();
+
+        TreeSet<String> uuids = service.getDatabase().getUniqueIndex();
         uuids.stream().sorted().forEach(s -> {
             logger.info(Thread.currentThread().getName());
             logger.info("read each student");
@@ -69,39 +66,34 @@ public class ManageCRUDServices implements ManagerInterface {
             students.add(student);
         });
 
-        //return students;
-        return CompletableFuture.completedFuture(students);
+        return students;
+    //    return CompletableFuture.completedFuture(students);
     }
 
     @Override
-    @Async
-    public CompletableFuture<Student> read(String uuid) {
+  //  @Async
+//    public CompletableFuture<Student> read(String uuid) {
+    public Student read(String uuid) {
 
         Student student = null;
         logger.info("read student");
         student = fromJson(uuid);
-        //return student;
-        return CompletableFuture.completedFuture(student);
+        return student;
+    //    return CompletableFuture.completedFuture(student);
     }
 
     @Override
     public List<Student> findStud(String name) {
 
         List<Student> students = new ArrayList<>();
-        TreeMap<String,List<String>> propIndex = database.getPropertyIndex();
+        TreeMap<String,List<String>> propIndex = service.getDatabase().getPropertyIndex();
         List<String> uuids = propIndex.get(name);
-        /*uuids.forEach(uuid->{
-            logger.info("this is student with "+uuid);
-            Student student = fromJson(uuid);
-            students.add(student);
-        });*/
+
         for(String uuid:uuids){
             logger.info("this is student with "+uuid);
             Student student = fromJson(uuid);
             students.add(student);
         }
-
-
         return students;
     }
 
@@ -109,7 +101,8 @@ public class ManageCRUDServices implements ManagerInterface {
     public List<Student> displayByName() {
 
         List<Student> allByName = new ArrayList<>();
-        TreeMap<String,List<String>> propIndex = database.getPropertyIndex();
+
+        TreeMap<String,List<String>> propIndex = service.getDatabase().getPropertyIndex();
         for (Map.Entry s:propIndex.entrySet()) {
             String name = (String) s.getKey();
             List<String> uuids = (List<String>) s.getValue();

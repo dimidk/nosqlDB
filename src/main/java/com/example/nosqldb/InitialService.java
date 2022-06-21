@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.integration.IntegrationDataSourceScriptDatabaseInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
@@ -35,14 +36,18 @@ public class InitialService {
     public static final String COLLECTION_DIR = "db/student/";
 
     private static InitialService initialThread;
+    @Autowired
+    private PrimitiveDatabase database;
 
     private InitialService() {
     }
 
     public static InitialService getInitialService() {
 
-        if (initialThread == null)
+        if (initialThread == null) {
             initialThread = new InitialService();
+
+        }
         else {
             logger.info("There is already an instance");
             throw new IllegalArgumentException();
@@ -51,6 +56,13 @@ public class InitialService {
         return initialThread;
     }
 
+    public PrimitiveDatabase getDatabase() {
+        return database;
+    }
+
+    public void setDatabase(PrimitiveDatabase database) {
+        this.database = database;
+    }
 
     public List<Path> listFiles(Path path) throws IOException {
 

@@ -20,10 +20,17 @@ public class NosqlDbApplication {
     @Autowired
     static
     InitialService server = InitialService.getInitialService();
+    @Bean
+    MasterDB getDatabase() {
+        return new MasterDB(server);
+    }
+    //PrimitiveDatabase database = new MasterDB(server);
+
+
 
     private static Logger logger = LogManager.getLogger(NosqlDbApplication.class);
 
-    @Bean
+  /*  @Bean
     public Executor taskExecutor() {
         logger.info("creating threads");
         final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -34,12 +41,10 @@ public class NosqlDbApplication {
         executor.initialize();
         return executor;
 
-    }
+    }*/
 
 
     public static void main(String[] args) {
-
-
 
         SpringApplication.run(NosqlDbApplication.class, args);
 

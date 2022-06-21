@@ -25,17 +25,11 @@ public class ManageAdminServices extends ManageCRUDServices {
 
     @Autowired
     private  InitialService service ;
-    //@Autowired
-    private PrimitiveDatabase database;
 
     private Logger logger = LogManager.getLogger(ManageAdminServices.class);
     @Autowired
-    public ManageAdminServices(InitialService service,PrimitiveDatabase database) {
- //   public ManageAdminServices() {
-
- //      this.service = InitialService.getInitialService();
-        super(service,database);
-
+    public ManageAdminServices(InitialService service) {
+        super(service);
     }
 
     protected Student fromJson(String field) {
@@ -45,7 +39,6 @@ public class ManageAdminServices extends ManageCRUDServices {
         try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+field+".json")) {
             student = json.fromJson(reader,Student.class);
             logger.info(student.getUuid());
-            //students.add(student);
 
         }catch (IOException e ){
             e.printStackTrace();
@@ -55,37 +48,26 @@ public class ManageAdminServices extends ManageCRUDServices {
 
     public  void write(Student student) {
 
-
-    //    if (this.getService() == null)
         if (service == null)
             System.exit(-1);
 
         logger.info("get a student object");
-    //    if (!this.getService().dbDirExists()) {
-        if (!service.dbDirExists()) {
+        if (!service.dbDirExists())
             service.createDbDir();
-    //        this.getService().createDbDir();
-        }
         Gson json = new Gson();
         String filename = String.valueOf(student.getUuid());
     //    synchronized (this) {
             try (Writer writer = new FileWriter(InitialService.COLLECTION_DIR + filename + ".json")) {
                 json.toJson(student, writer);
                 logger.info("write new student to db");
-                //service.addUniqueIndex(student);
-                //service.addPropertyIndex(student);
 
-                database.addUniqueIndex(student);
-                database.addPropertyIndex(student);
-
-                //    this.getService().addUniqueIndex(student);
-                //    this.getService().addPropertyIndex(student);
-
+                service.getDatabase().addUniqueIndex(student);
+                service.getDatabase().addPropertyIndex(student);
             } catch (IOException e) {
                 e.printStackTrace();
 
             }
-            this.notifyAll();
+    //        this.notifyAll();
     //    }
 
     }
@@ -107,13 +89,9 @@ public class ManageAdminServices extends ManageCRUDServices {
         Student student = null;
         student = fromJson(uuid);
 
-    //    service.deleteUniqueIndex(student);
-    //    service.deletePropertyIndex(student);
 
-        database.deletePropertyIndex(student);
-        database.deleteUniqueIndex(student);
-    //    this.getService().deleteUniqueIndex(student);
-    //    this.getService().deletePropertyIndex(student);
+        service.getDatabase().deletePropertyIndex(student);
+        service.getDatabase().deleteUniqueIndex(student);
         Files.delete(Path.of(InitialService.COLLECTION_DIR + uuid + ".json"));
     }
 
@@ -128,14 +106,8 @@ public class ManageAdminServices extends ManageCRUDServices {
             if (!Files.exists(Path.of(filename)))
                 Files.createFile(Path.of(filename),fileAttributes);
 
-        //    TreeSet<String> uniqIndex = service.getUniqueIndex();
-        //    TreeMap<String,List<String>> propIndex = service.getPropertyIndex();
-
-            TreeSet<String> uniqIndex = database.getUniqueIndex();
-            TreeMap<String,List<String>> propIndex = database.getPropertyIndex();
-
-        //    TreeSet<String> uniqIndex = this.getService().getUniqueIndex();
-        //    TreeMap<String,List<String>> propIndex = this.getService().getPropertyIndex();
+            TreeSet<String> uniqIndex = service.getDatabase().getUniqueIndex();
+            TreeMap<String,List<String>> propIndex = service.getDatabase().getPropertyIndex();
 
             logger.info("write each record to datafile");
             Files.write(Paths.get(filename), "create database file\n".getBytes(), StandardOpenOption.APPEND);
@@ -198,8 +170,8 @@ public class ManageAdminServices extends ManageCRUDServices {
         logger.info("try to load/import database");
 
         try {
-            //service.loadDatabase();
-            database.loadDatabase(dbName);
+            service.getDatabase().createDbDir();
+            service.getDatabase().loadDatabase(dbName);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -210,8 +182,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         logger.info("try to load/import database");
 
         try {
-            //service.loadDatabase();
-            database.loadDatabase(slaveDb);
+            service.getDatabase().loadDatabase(slaveDb);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

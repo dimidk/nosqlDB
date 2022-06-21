@@ -25,23 +25,24 @@ public class CRUDControllers {
     private Logger logger = LogManager.getLogger(CRUDControllers.class);
 
     @GetMapping("/read")
-    public CompletableFuture<List<Student>> read() {
-
-
+//    public CompletableFuture<List<Student>> read() {
+    public List<Student> read() {
 
         logger.info("read all students");
-        CompletableFuture<List<Student>> students = services.read();
+    //    CompletableFuture<List<Student>> students = services.read();
+        List<Student> students = services.read();
        // return CompletableFuture.completedFuture(students);
         return students;
 
     }
 
     @GetMapping("/read/{uuid}")
-    public CompletableFuture<Student> read(@PathVariable String uuid) {
+    //public CompletableFuture<Student> read(@PathVariable String uuid) {
+    public Student read(@PathVariable String uuid) {
 
         logger.info("read for uuid"+uuid);
-        CompletableFuture<Student> student = services.read(uuid);
-
+    //    CompletableFuture<Student> student = services.read(uuid);
+        Student student = services.read(uuid);
         return student;
     }
 
@@ -61,34 +62,5 @@ public class CRUDControllers {
         return students;
     }
 
-    /*@PostMapping("/write")
-    public void write(@RequestBody Student student) {
 
-        logger.info("write for student:"+student);
-        logger.info(student.getUuid()+" "+student.getSurname());
-        if (adminServices == null) {
-            logger.info("no normal exit");
-            System.exit(-1);
-        }
-        adminServices.write(student);
-
-    }
-
-
-    @PutMapping("/update/{field}")
-    public void update(@PathVariable String field) {
-
-        logger.info("update certain student");
-        adminServices.update(field);
-
-    }
-
-
-    @DeleteMapping("/delete/{uuid}")
-    public void delete(@PathVariable String uuid) throws IOException {
-
-        logger.info("delete certain student");
-        adminServices.delete(uuid);
-
-    }*/
 }

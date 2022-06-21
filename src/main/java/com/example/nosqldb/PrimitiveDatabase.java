@@ -47,11 +47,15 @@ public abstract class PrimitiveDatabase {
         //    logger.info("ERROR");
             throw new IllegalArgumentException();
         }
-        if (this.getPropertyIndex().containsKey(stud.getSurname()))
-            this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
+    //    if (this.getPropertyIndex().containsKey(stud.getSurname()))
+        if (propertyIndex.containsKey(stud.getSurname()))
+        //    this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
+            propertyIndex.get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
         else {
-            this.getPropertyIndex().put(stud.getSurname(),new ArrayList<>());
-            this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
+        //    this.getPropertyIndex().put(stud.getSurname(),new ArrayList<>());
+        //    this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
+            propertyIndex.put(stud.getSurname(),new ArrayList<>());
+            propertyIndex.get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
         }
     }
 
@@ -61,10 +65,12 @@ public abstract class PrimitiveDatabase {
             throw new IllegalArgumentException();
 
         List<String> temp = this.getPropertyIndex().get(stud.getSurname());
-        this.getPropertyIndex().remove(stud.getSurname(),temp);
+        propertyIndex.remove(stud.getSurname(),temp);
+        //this.getPropertyIndex().remove(stud.getSurname(),temp);
 
         temp.remove(String.valueOf(stud.getUuid()));
-        this.getPropertyIndex().put(stud.getSurname(),temp);
+        propertyIndex.put(stud.getSurname(),temp);
+    //    this.getPropertyIndex().put(stud.getSurname(),temp);
         //this.getPropertyIndex().remove(stud.getSurname());
     }
 
@@ -73,7 +79,9 @@ public abstract class PrimitiveDatabase {
         if (stud == null) {
             throw new IllegalArgumentException();
         }
-        this.getUniqueIndex().add(String.valueOf(stud.getUuid()));
+        //this.getUniqueIndex().add(String.valueOf(stud.getUuid()));
+
+        uniqueIndex.add(String.valueOf(stud.getUuid()));
 
     }
 
@@ -83,7 +91,8 @@ public abstract class PrimitiveDatabase {
         if (stud == null) {
             throw new IllegalArgumentException();
         }
-        this.getUniqueIndex().remove(String.valueOf(stud.getUuid()));
+        //this.getUniqueIndex().remove(String.valueOf(stud.getUuid()));
+        uniqueIndex.remove(String.valueOf(stud.getUuid()));
 
     }
     public abstract void createDbDir();
