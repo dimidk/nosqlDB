@@ -32,7 +32,8 @@ public abstract class Slave extends PrimitiveDatabase {
     public abstract void createDbDir() ;
 
     @Override
-    public void loadDatabase(String slaveDir) throws IOException {
+    public void loadDatabase(String dir) throws IOException {
 
     }
+    public abstract void createSlaveDB(String slaveDir);
 }

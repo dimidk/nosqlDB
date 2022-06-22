@@ -19,8 +19,16 @@ public class Student implements Comparable{
         this.grade = grade;
     }
 
+    public static Integer getStudObj() {
+        return studObj;
+    }
+
     public int getUuid() {
         return uuid;
+    }
+
+    public void setUuid(int uuid) {
+        this.uuid = uuid;
     }
 
     public String getSurname() {

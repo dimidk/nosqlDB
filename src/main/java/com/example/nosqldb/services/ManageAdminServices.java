@@ -2,7 +2,10 @@ package com.example.nosqldb.services;
 
 import com.example.nosqldb.InitialService;
 import com.example.nosqldb.PrimitiveDatabase;
+import com.example.nosqldb.Slave;
+import com.example.nosqldb.SlaveDB;
 import com.example.nosqldb.schema.Student;
+import com.example.nosqldb.shared.SharedClass;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -55,12 +58,14 @@ public class ManageAdminServices extends ManageCRUDServices {
         if (!service.dbDirExists())
             service.createDbDir();
         Gson json = new Gson();
-        String filename = String.valueOf(student.getUuid());
+        int objNum = SharedClass.checkForDocuments(service.getDatabase().getUniqueIndex());
+
+        String filename = String.valueOf(objNum);
     //    synchronized (this) {
-            try (Writer writer = new FileWriter(InitialService.COLLECTION_DIR + filename + ".json")) {
+            try (Writer writer = new FileWriter(PrimitiveDatabase.COLLECTION_DIR + filename + ".json")) {
+                student.setUuid(objNum);
                 json.toJson(student, writer);
                 logger.info("write new student to db");
-
                 service.getDatabase().addUniqueIndex(student);
                 service.getDatabase().addPropertyIndex(student);
             } catch (IOException e) {
@@ -171,7 +176,8 @@ public class ManageAdminServices extends ManageCRUDServices {
 
         try {
             service.getDatabase().createDbDir();
-            service.getDatabase().loadDatabase(dbName);
+            String dir = PrimitiveDatabase.COLLECTION_DIR;
+            service.getDatabase().loadDatabase(dir);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -179,13 +185,11 @@ public class ManageAdminServices extends ManageCRUDServices {
 
     public void replicate(String slaveDb){
 
-        logger.info("try to load/import database");
+        logger.info("try to replicate database");
+        Slave slaveDatabase = new SlaveDB(slaveDb);
+        slaveDatabase.createDbDir();
+        slaveDatabase.createSlaveDB(slaveDb);
 
-        try {
-            service.getDatabase().loadDatabase(slaveDb);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }

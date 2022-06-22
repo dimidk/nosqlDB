@@ -18,6 +18,9 @@ import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.*;
+import java.util.stream.Stream;
+
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class MasterDB extends PrimitiveDatabase {
 
@@ -57,7 +60,7 @@ public class MasterDB extends PrimitiveDatabase {
 
     public void loadDatabase(String dir) throws IOException {
 
-        dir = PrimitiveDatabase.COLLECTION_DIR;
+        //dir = PrimitiveDatabase.COLLECTION_DIR;
         logger.info("directory to read from "+dir);
 
         TreeSet<String> tempTree = this.getUniqueIndex();
@@ -67,29 +70,17 @@ public class MasterDB extends PrimitiveDatabase {
         logger.info(tempMap.entrySet().size());
 
         if (this.getPropertyIndex().size() == 0 || this.getUniqueIndex().size() == 0) {
-    //    if (tempTree.size() == 0 || tempMap.size() == 0) {
 
-        //    if (Files.exists(Path.of(PrimitiveDatabase.COLLECTION_DIR))) {
             if (Files.exists(Path.of(dir))) {
-                logger.info(Thread.currentThread().getName()+" satisfies request");
                 logger.info("directory exists");
-                
-                //    List<Path> files = InitialService.getInitialService().listFiles(Path.of(InitialService.COLLECTION_DIR));
                 List<Path> files = PrimitiveDatabase.server.listFiles(Path.of(dir));
                 files.forEach(s -> {
                     Gson json = new Gson();
                     try (Reader reader = new FileReader(String.valueOf(s))) {
                         Student student = json.fromJson(reader, Student.class);
 
-                    //    this.addPropertyIndex(student);
-                    //    this.addUniqueIndex(student);
-
-                        tempTree.add(String.valueOf(student.getUuid()));
-
                         addPropertyIndex(student);
                         addUniqueIndex(student);
-                        logger.info(tempTree.first());
-                        logger.info(tempMap.firstKey());
                         logger.info(getPropertyIndex().size());
                         logger.info(getUniqueIndex().size());
 
@@ -101,10 +92,30 @@ public class MasterDB extends PrimitiveDatabase {
                 });
             }
         }
-        //this.setUniqueIndex(tempTree);
-        setUniqueIndex(tempTree);
-        for(String uuid:tempTree) {
-            logger.info("this is from loaddatabase method to import unique index"+uuid);
+    }
+    @Override
+    public void createSlaveDB(String slaveDir) {
+
+        //dir = slaveDb-1, slave-Db2 ....
+
+        createDbDir();
+
+        String copyFromDir = PrimitiveDatabase.DATABASE_DIR;
+        String copyToDir = slaveDir + "/"+Slave.DATABASE_DIR;
+
+        try (Stream<Path> stream = Files.walk(Path.of(copyFromDir))) {
+
+            stream.forEach(source -> {
+                try {
+                    Files.copy(source, Path.of(copyToDir), REPLACE_EXISTING);
+                    logger.info("file copied");
+                }
+                catch (IOException e ){
+                    e.printStackTrace();
+                }
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

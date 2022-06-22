@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-//public abstract class PrimitiveDatabase implements PrimitiveDBInterface{
+
 public abstract class PrimitiveDatabase {
 
     public static final String DATABASE_DIR = "db/";
@@ -49,11 +49,8 @@ public abstract class PrimitiveDatabase {
         }
     //    if (this.getPropertyIndex().containsKey(stud.getSurname()))
         if (propertyIndex.containsKey(stud.getSurname()))
-        //    this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
             propertyIndex.get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
         else {
-        //    this.getPropertyIndex().put(stud.getSurname(),new ArrayList<>());
-        //    this.getPropertyIndex().get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
             propertyIndex.put(stud.getSurname(),new ArrayList<>());
             propertyIndex.get(stud.getSurname()).add(String.valueOf(stud.getUuid()));
         }
@@ -66,12 +63,9 @@ public abstract class PrimitiveDatabase {
 
         List<String> temp = this.getPropertyIndex().get(stud.getSurname());
         propertyIndex.remove(stud.getSurname(),temp);
-        //this.getPropertyIndex().remove(stud.getSurname(),temp);
 
         temp.remove(String.valueOf(stud.getUuid()));
         propertyIndex.put(stud.getSurname(),temp);
-    //    this.getPropertyIndex().put(stud.getSurname(),temp);
-        //this.getPropertyIndex().remove(stud.getSurname());
     }
 
     public void addUniqueIndex(Student stud) {
@@ -79,10 +73,7 @@ public abstract class PrimitiveDatabase {
         if (stud == null) {
             throw new IllegalArgumentException();
         }
-        //this.getUniqueIndex().add(String.valueOf(stud.getUuid()));
-
         uniqueIndex.add(String.valueOf(stud.getUuid()));
-
     }
 
     public void deleteUniqueIndex(Student stud) {
@@ -91,12 +82,13 @@ public abstract class PrimitiveDatabase {
         if (stud == null) {
             throw new IllegalArgumentException();
         }
-        //this.getUniqueIndex().remove(String.valueOf(stud.getUuid()));
         uniqueIndex.remove(String.valueOf(stud.getUuid()));
 
     }
     public abstract void createDbDir();
 
     public abstract void loadDatabase(String dir) throws IOException ;
+
+    public abstract void createSlaveDB(String slaveDir);
 
 }
