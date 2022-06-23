@@ -23,6 +23,9 @@ public class NosqlDbApplication {
     static
     InitialService server = InitialService.getInitialService();
 
+    /*@Autowired
+    static LoadBalance loadBalance = LoadBalance.getLoadBalance();*/
+
     @Bean
     RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate();

@@ -31,7 +31,6 @@ public class MasterDB extends PrimitiveDatabase {
 
     }
 
-
     public boolean dbDirExists() {
         
         if (!Files.exists(Path.of(PrimitiveDatabase.DATABASE_DIR))) {
@@ -63,7 +62,7 @@ public class MasterDB extends PrimitiveDatabase {
         //dir = PrimitiveDatabase.COLLECTION_DIR;
         logger.info("directory to read from "+dir);
 
-        TreeSet<String> tempTree = this.getUniqueIndex();
+        TreeSet<Integer> tempTree = this.getUniqueIndex();
         TreeMap<String,List<String>> tempMap = this.getPropertyIndex();
 
         logger.info(tempTree.size());

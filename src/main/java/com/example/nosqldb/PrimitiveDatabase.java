@@ -17,7 +17,7 @@ public abstract class PrimitiveDatabase {
     public static final String COLLECTION_DIR = "db/student/";
     protected static InitialService server;
 
-    private TreeSet<String> uniqueIndex = new TreeSet<>();
+    private TreeSet<Integer> uniqueIndex = new TreeSet<>();
     private TreeMap<String, List<String>> propertyIndex = new TreeMap<>();
 
     public PrimitiveDatabase(InitialService server) {
@@ -25,11 +25,11 @@ public abstract class PrimitiveDatabase {
         this.server = server;
     }
 
-    public TreeSet<String> getUniqueIndex() {
+    public TreeSet<Integer> getUniqueIndex() {
         return uniqueIndex;
     }
 
-    public void setUniqueIndex(TreeSet<String> uniqueIndex) {
+    public void setUniqueIndex(TreeSet<Integer> uniqueIndex) {
         this.uniqueIndex = uniqueIndex;
     }
 
@@ -73,7 +73,7 @@ public abstract class PrimitiveDatabase {
         if (stud == null) {
             throw new IllegalArgumentException();
         }
-        uniqueIndex.add(String.valueOf(stud.getUuid()));
+        uniqueIndex.add(stud.getUuid());
     }
 
     public void deleteUniqueIndex(Student stud) {
@@ -82,7 +82,7 @@ public abstract class PrimitiveDatabase {
         if (stud == null) {
             throw new IllegalArgumentException();
         }
-        uniqueIndex.remove(String.valueOf(stud.getUuid()));
+        uniqueIndex.remove(stud.getUuid());
 
     }
     public abstract void createDbDir();

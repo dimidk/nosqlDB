@@ -1,15 +1,21 @@
 package com.example.nosqldb.controllers;
 
+import com.example.nosqldb.AdminManager;
+import com.example.nosqldb.LoadBalance;
+import com.example.nosqldb.schema.UsersDB;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class LoginController {
 
     private Logger logger = LogManager.getLogger(CRUDControllers.class);
+    @Autowired
+    private LoadBalance loadBalance;
+    @Autowired
+    private AdminManager adminManager;
 
     /*protected String authName(Authentication auth) {
 
@@ -41,18 +47,19 @@ public class LoginController {
         return "index";
     }
 
-    @PostMapping("/login")
-    public String login() {
+    @PostMapping("/connect")
+    public String connect(@RequestBody UsersDB user) {
 
         //Authentication auth = getAuth();
 
         //String username = authName(auth);
-        logger.info("in servlet path ");
-        return "login";
+        logger.info("in connection control");
+        String result = adminManager.connect(user);
+        return null;
     }
 
-    @GetMapping("/logout")
-    public String logout() {
+    @GetMapping("/disconnect")
+    public String disconnect() {
         return "logout";
     }
 }

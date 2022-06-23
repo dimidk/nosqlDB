@@ -1,6 +1,9 @@
 package com.example.nosqldb.shared;
 
+import com.example.nosqldb.InitialService;
 import com.example.nosqldb.schema.Student;
+import com.example.nosqldb.schema.UsersDB;
+import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +12,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -24,10 +30,38 @@ public class SharedClass {
         this.restTemplate = restTemplate;
     };
 
-    public static int checkForDocuments(TreeSet<String> index) {
+    public static int checkForDocuments(TreeSet<Integer> index) {
 
         int numOfDocuments = index.size();
         return numOfDocuments++;
+    }
+
+    public static Student fromJson(int field) {
+
+        Student student = null;
+        Gson json = new Gson();
+        try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+String.valueOf(field)+".json")) {
+            student = json.fromJson(reader,Student.class);
+            logger.info(student.getUuid());
+
+        }catch (IOException e ){
+            e.printStackTrace();
+        }
+        return student;
+    }
+
+    public static UsersDB fromJsonUser(int field) {
+
+        UsersDB userdb = null;
+        Gson json = new Gson();
+        try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+String.valueOf(field)+".json")) {
+            userdb = json.fromJson(reader,UsersDB.class);
+            logger.info(userdb.getUuid());
+
+        }catch (IOException e ){
+            e.printStackTrace();
+        }
+        return userdb;
     }
 
     public  List<Student> makeRestTemplateRequest(String restUrl) {

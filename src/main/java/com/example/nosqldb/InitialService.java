@@ -37,6 +37,12 @@ public class InitialService {
     @Autowired
     private PrimitiveDatabase database;
 
+    @Autowired
+    private static LoadBalance loadBalance = LoadBalance.getLoadBalance();
+
+    @Autowired
+    private static AdminManager adminManager = AdminManager.getAdminManager();
+
     private InitialService() {
     }
 
@@ -52,6 +58,14 @@ public class InitialService {
         }
 
         return initialThread;
+    }
+
+    public static LoadBalance getLoadBalance() {
+        return loadBalance;
+    }
+
+    public static void setLoadBalance(LoadBalance loadBalance) {
+        InitialService.loadBalance = loadBalance;
     }
 
     public PrimitiveDatabase getDatabase() {

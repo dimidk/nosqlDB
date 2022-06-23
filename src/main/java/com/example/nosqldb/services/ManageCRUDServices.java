@@ -34,11 +34,12 @@ public class ManageCRUDServices implements ManagerInterface {
         return service;
     }
 
-    protected Student fromJson(String field) {
+//    protected Student fromJson(String field) {
+    protected Student fromJson(int field) {
 
         Student student = null;
         Gson json = new Gson();
-        try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+field+".json")) {
+        try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+String.valueOf(field)+".json")) {
 
             student = json.fromJson(reader,Student.class);
             logger.info(student.getUuid());
@@ -58,7 +59,7 @@ public class ManageCRUDServices implements ManagerInterface {
 
         logger.info("read uuid index for all students");
 
-        TreeSet<String> uuids = service.getDatabase().getUniqueIndex();
+        TreeSet<Integer> uuids = service.getDatabase().getUniqueIndex();
         uuids.stream().sorted().forEach(s -> {
             logger.info(Thread.currentThread().getName());
             logger.info("read each student");
@@ -77,7 +78,7 @@ public class ManageCRUDServices implements ManagerInterface {
 
         Student student = null;
         logger.info("read student");
-        student = fromJson(uuid);
+        student = fromJson(Integer.valueOf(uuid));
         return student;
     //    return CompletableFuture.completedFuture(student);
     }
@@ -91,7 +92,7 @@ public class ManageCRUDServices implements ManagerInterface {
 
         for(String uuid:uuids){
             logger.info("this is student with "+uuid);
-            Student student = fromJson(uuid);
+            Student student = fromJson(Integer.valueOf(uuid));
             students.add(student);
         }
         return students;
@@ -111,7 +112,7 @@ public class ManageCRUDServices implements ManagerInterface {
             List<String> uuids = (List<String>) s.getValue();
 
             for (String uuid:uuids){
-                Student student = fromJson(uuid);
+                Student student = fromJson(Integer.valueOf(uuid));
                 allByName.add(student);
                 logger.info(student.getUuid() +" "+student.getSurname());
             }

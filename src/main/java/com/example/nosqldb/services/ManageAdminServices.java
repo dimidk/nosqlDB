@@ -43,11 +43,11 @@ public class ManageAdminServices extends ManageCRUDServices {
     //    SharedClass sharedClass = new SharedClass(restTemplate);
     }
 
-    protected Student fromJson(String field) {
+    /*protected Student fromJson(int field) {
 
         Student student = null;
         Gson json = new Gson();
-        try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+field+".json")) {
+        try (Reader reader = new FileReader(InitialService.COLLECTION_DIR+String.valueOf(field)+".json")) {
             student = json.fromJson(reader,Student.class);
             logger.info(student.getUuid());
 
@@ -55,7 +55,7 @@ public class ManageAdminServices extends ManageCRUDServices {
             e.printStackTrace();
         }
         return student;
-    }
+    }*/
 
     public  HttpStatus write(Student student) {
 
@@ -99,7 +99,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         //update wants two parameters one uuid and one the update field
 
         Student student = null;
-        student = fromJson(field);
+        student = SharedClass.fromJson(Integer.valueOf(field));
         student.setGrade(field);
 
     }
@@ -108,7 +108,7 @@ public class ManageAdminServices extends ManageCRUDServices {
     public  void delete(String uuid) throws IOException {
 
         Student student = null;
-        student = fromJson(uuid);
+        student = SharedClass.fromJson(Integer.valueOf(uuid));
 
 
         service.getDatabase().deletePropertyIndex(student);
@@ -131,7 +131,7 @@ public class ManageAdminServices extends ManageCRUDServices {
             if (!Files.exists(Path.of(filename)))
                 Files.createFile(Path.of(filename),fileAttributes);
 
-            TreeSet<String> uniqIndex = service.getDatabase().getUniqueIndex();
+            TreeSet<Integer> uniqIndex = service.getDatabase().getUniqueIndex();
             TreeMap<String,List<String>> propIndex = service.getDatabase().getPropertyIndex();
 
             logger.info("write each record to datafile");
@@ -140,7 +140,7 @@ public class ManageAdminServices extends ManageCRUDServices {
             Files.write(Paths.get(filename), InitialService.COLLECTION_DIR.getBytes(), StandardOpenOption.APPEND);
             uniqIndex.stream().sorted().forEach(s -> {
 
-                Student student = fromJson(s);
+                Student student = SharedClass.fromJson(s);
                 Gson json = new Gson();
                 String jsonString = json.toJson(student);
                 try {
@@ -157,7 +157,7 @@ public class ManageAdminServices extends ManageCRUDServices {
             uniqIndex.stream().sorted().forEach(s -> {
 
                 try {
-                    Files.write(Paths.get(filename), s.getBytes(), StandardOpenOption.APPEND);
+                    Files.write(Paths.get(filename), String.valueOf(s).getBytes(), StandardOpenOption.APPEND);
                     Files.write(Paths.get(filename), "\n".getBytes(), StandardOpenOption.APPEND);
 
                 } catch (IOException e) {

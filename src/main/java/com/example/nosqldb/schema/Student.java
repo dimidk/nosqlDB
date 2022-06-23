@@ -8,14 +8,10 @@ import lombok.ToString;
 public class Student implements Comparable{
 
     private static Integer studObj = 0;
-
     @JsonProperty("uuid")
     private int uuid;
-
     @JsonProperty("surname")
     private String surname;
-
-
     @JsonProperty("grade")
     private String grade;
 
