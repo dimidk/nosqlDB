@@ -13,9 +13,9 @@ public class LoginController {
 
     private Logger logger = LogManager.getLogger(CRUDControllers.class);
     @Autowired
-    private LoadBalance loadBalance;
+    private static LoadBalance loadBalance;
     @Autowired
-    private AdminManager adminManager;
+    private static AdminManager adminManager;
 
     /*protected String authName(Authentication auth) {
 

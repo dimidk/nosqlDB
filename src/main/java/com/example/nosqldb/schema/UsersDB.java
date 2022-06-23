@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
-@Builder
-@ToString
+
 public class UsersDB implements Comparable{
+
+    private static Integer userObj=0;
 
     @JsonProperty("uuid")
     int uuid;
@@ -22,6 +22,7 @@ public class UsersDB implements Comparable{
     public UsersDB(){}
 
     public UsersDB(String username, String password, String database) {
+        this.uuid = userObj++;
         this.username = username;
         this.password = password;
         this.database = database;
