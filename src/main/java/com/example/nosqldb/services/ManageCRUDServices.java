@@ -100,6 +100,9 @@ public class ManageCRUDServices implements ManagerInterface {
     @Override
     public List<Student> displayByName() {
 
+        logger.info("read property index");
+        logger.info("index loaded from ");
+
         List<Student> allByName = new ArrayList<>();
 
         TreeMap<String,List<String>> propIndex = service.getDatabase().getPropertyIndex();

@@ -1,5 +1,6 @@
 package com.example.nosqldb.schema;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -8,9 +9,17 @@ public class Student implements Comparable{
 
     private static Integer studObj = 0;
 
+    @JsonProperty("uuid")
     private int uuid;
+
+    @JsonProperty("surname")
     private String surname;
+
+
+    @JsonProperty("grade")
     private String grade;
+
+    public Student() {}
 
     public Student(String surname, String grade) {
 

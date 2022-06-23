@@ -8,11 +8,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
 import java.util.concurrent.Executor;
 
 @SpringBootApplication
-@EnableAsync(proxyTargetClass=true )
+//@EnableAsync(proxyTargetClass=true )
 public class NosqlDbApplication {
 
     //private static  InitialService server ;
@@ -20,29 +22,34 @@ public class NosqlDbApplication {
     @Autowired
     static
     InitialService server = InitialService.getInitialService();
+
     @Bean
-    MasterDB getDatabase() {
-        return new MasterDB(server);
+    RestTemplate restTemplate() {
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate;
+    }
+    @Bean
+    MasterDB getDatabase()  {
+        MasterDB masterDB = new MasterDB(server);
+        if (masterDB.dbDirExists()) {
+            try  {
+                masterDB.loadDatabase(MasterDB.COLLECTION_DIR);
+                System.out.println("everything ok");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+            masterDB.createDbDir();
+
+        return masterDB;
+    //    return new MasterDB(server);
     }
     //PrimitiveDatabase database = new MasterDB(server);
 
 
 
     private static Logger logger = LogManager.getLogger(NosqlDbApplication.class);
-
-  /*  @Bean
-    public Executor taskExecutor() {
-        logger.info("creating threads");
-        final ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("DatabaseInstance-");
-        executor.initialize();
-        return executor;
-
-    }*/
-
 
     public static void main(String[] args) {
 

@@ -10,7 +10,9 @@ import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -28,11 +30,17 @@ public class ManageAdminServices extends ManageCRUDServices {
 
     @Autowired
     private  InitialService service ;
+    @Autowired
+    private RestTemplate restTemplate;
+    @Autowired
+    private SharedClass sharedClass;
 
     private Logger logger = LogManager.getLogger(ManageAdminServices.class);
     @Autowired
     public ManageAdminServices(InitialService service) {
+
         super(service);
+    //    SharedClass sharedClass = new SharedClass(restTemplate);
     }
 
     protected Student fromJson(String field) {
@@ -49,7 +57,7 @@ public class ManageAdminServices extends ManageCRUDServices {
         return student;
     }
 
-    public  void write(Student student) {
+    public  HttpStatus write(Student student) {
 
         if (service == null)
             System.exit(-1);
@@ -59,21 +67,29 @@ public class ManageAdminServices extends ManageCRUDServices {
             service.createDbDir();
         Gson json = new Gson();
         int objNum = SharedClass.checkForDocuments(service.getDatabase().getUniqueIndex());
-
         String filename = String.valueOf(objNum);
     //    synchronized (this) {
             try (Writer writer = new FileWriter(PrimitiveDatabase.COLLECTION_DIR + filename + ".json")) {
                 student.setUuid(objNum);
                 json.toJson(student, writer);
                 logger.info("write new student to db");
+                logger.info("add new student to indexes:"+student.getUuid() +student.getSurname()+student.getGrade());
+                logger.info("indexes size unique,property:"+service.getDatabase().getUniqueIndex().size()+ service.getDatabase().getPropertyIndex().size());
                 service.getDatabase().addUniqueIndex(student);
+                logger.info("unique index:"+service.getDatabase().getUniqueIndex().size());
                 service.getDatabase().addPropertyIndex(student);
+                logger.info("unique index:"+service.getDatabase().getPropertyIndex().size());
             } catch (IOException e) {
                 e.printStackTrace();
 
             }
+            //SharedClass sharedClass = new SharedClass();
+            List<Student> students = sharedClass.makeRestTemplateRequest("update-db");
+            HttpStatus status = SharedClass.returnStatus(students);
     //        this.notifyAll();
     //    }
+
+        return status;
 
     }
 
@@ -98,6 +114,10 @@ public class ManageAdminServices extends ManageCRUDServices {
         service.getDatabase().deletePropertyIndex(student);
         service.getDatabase().deleteUniqueIndex(student);
         Files.delete(Path.of(InitialService.COLLECTION_DIR + uuid + ".json"));
+
+        List<Student> students = sharedClass.makeRestTemplateRequest("update-db");
+        HttpStatus status = SharedClass.returnStatus(students);
+
     }
 
     public  void export(String dbName) {
@@ -183,13 +203,13 @@ public class ManageAdminServices extends ManageCRUDServices {
         }
     }
 
-    public void replicate(String slaveDb){
+  /*  public void replicate(String slaveDb){
 
         logger.info("try to replicate database");
         Slave slaveDatabase = new SlaveDB(slaveDb);
         slaveDatabase.createDbDir();
         slaveDatabase.createSlaveDB(slaveDb);
 
-    }
+    }*/
 
 }

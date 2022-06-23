@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -79,6 +77,7 @@ public class InitialService {
         if (!Files.exists(Path.of(InitialService.DATABASE_DIR))) {
             return false;
         }
+
         return true;
     }
 

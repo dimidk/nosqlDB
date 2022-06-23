@@ -3,6 +3,7 @@ package com.example.nosqldb.controllers;
 import com.example.nosqldb.schema.Student;
 import com.example.nosqldb.services.ManageAdminServices;
 import com.example.nosqldb.services.ManagerInterface;
+import com.example.nosqldb.shared.SharedClass;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,12 +68,12 @@ public class AdminControllers {
         adminServices.delete(uuid);
 
     }
-    @GetMapping("/replica/{slaveDb}")
+   /* @GetMapping("/replica/{slaveDb}")
     public void replica(@PathVariable String slaveDb) {
 
         logger.info("create replication database");
         adminServices.replicate(slaveDb);
 
-    }
+    }*/
 
 }
